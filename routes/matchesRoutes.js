@@ -17,4 +17,12 @@ router.put('/matches/:id', matchesController.updateMatch);
 // Delete a match by ID
 router.delete('/matches/:id', matchesController.deleteMatch);
 
+router.get('/', (req, res)=>{
+    return res.json({success: true});
+});
+router.post('/', (req, res)=>{
+    console.log(req.body.currentState.recentOvers);
+    return res.json({success: true});
+});
+
 module.exports = router;

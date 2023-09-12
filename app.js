@@ -2,8 +2,12 @@ const express = require('express');
 const sequelize = require('./database');
 const matchesRoutes = require('./routes/matchesRoutes');
 const seriesRoutes = require('./routes/seriesRoutes');
+const cors = require('cors'); // Import the cors package
 
 const app = express();
+
+// Use the cors middleware to allow all origins
+app.use(cors());
 
 app.use(express.json());
 
