@@ -3,9 +3,9 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
 const Series = sequelize.define('Series', {
-  id: {type: DataTypes.BIGINT, allowNull: false, primaryKey: true, autoIncrement: true},
+  id: {type: DataTypes.BIGINT, allowNull: false, primaryKey: true, autoIncrement: false},
   title: {type: DataTypes.STRING, allowNull: false, },
-  description: {type: DataTypes.STRING, allowNull: false,},
+  description: {type: DataTypes.STRING, allowNull: true,},
   from: {type: DataTypes.DATE, allowNull: true,},
   to: {type: DataTypes.DATE, allowNull: true,},
   isEnd: {type: DataTypes.BOOLEAN, allowNull: true,},

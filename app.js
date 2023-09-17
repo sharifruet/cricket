@@ -6,6 +6,8 @@ const cors = require('cors'); // Import the cors package
 
 const app = express();
 
+app.use(express.json({limit: '50mb'}));
+
 // Use the cors middleware to allow all origins
 app.use(cors());
 
