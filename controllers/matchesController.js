@@ -2,6 +2,7 @@ const Match = require('../models/match');
 const Series = require('../models/series');
 const Team = require('../models/team');
 const Venue = require('../models/venue');
+const Innings = require('../models/innings');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
@@ -195,6 +196,21 @@ addTeamIfNotExists = async (team) =>{
 
 addVenueIfNotExists = async (venue) =>{
   const existingVenue= await Venue.findByPk(venue.id);
+  if(existingVenue){
+    console.log('Venue Found');
+  }else{
+    console.log('Venue Not Found');
+    const newVenue = Venue.create(venue);
+  }
+}
+
+processInnings = async (match) =>{
+  const innings = match.innings;
+  for(let i=0;i<innings.length;i++){
+    const ings = innings[i];
+    
+  }
+  const existingVenue = await Venue.findByPk(venue.id);
   if(existingVenue){
     console.log('Venue Found');
   }else{
