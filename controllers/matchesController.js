@@ -3,6 +3,8 @@ const Series = require('../models/series');
 const Team = require('../models/team');
 const Venue = require('../models/venue');
 const Innings = require('../models/innings');
+const currwntState = require('../models/currentState');
+const CurrentState = require('../models/currentState');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
@@ -96,7 +98,9 @@ exports.processICCMatch = async (req, res) =>{
         console.log(matchInfo);
       }  
 
-      console.log(innings);
+      processInnings(match);
+      processCurrentState(match);
+      //console.log(innings);
           
       //console.log(matchId);
 
@@ -154,6 +158,12 @@ processMatchInfo = async (matchInfo, matchId)=>{
   const oversLimit = matchInfo.oversLimit;
   const groupName = matchInfo.groupName;
   const totalBalls = matchInfo.totalBalls;
+  const matchStatus = matchInfo.matchStatus;
+
+  const matchState = matchInfo.matchState;
+  const description = matchInfo.description;
+  const matchSummary = matchInfo.matchSummary;
+  const inningsSummary = matchInfo.inningsSummary;
 
   addVenueIfNotExists(venue);
 
@@ -175,7 +185,8 @@ processMatchInfo = async (matchInfo, matchId)=>{
     const id = matchId;
     const [updated] = await Match.update({
       team1: team1, team2: team2, matchDate: matchDate, matchEndDate: matchEndDate, venueId: venueId, 
-      matchType: matchType, oversLimit: oversLimit, groupName: groupName, totalBalls: totalBalls
+      matchType: matchType, oversLimit: oversLimit, groupName: groupName, totalBalls: totalBalls, matchStatus: matchStatus,
+      matchState: matchState, description: description, matchSummary: matchSummary, inningsSummary: inningsSummary
     }, {
       where: { id },
     });
@@ -205,11 +216,113 @@ addVenueIfNotExists = async (venue) =>{
 }
 
 processInnings = async (match) =>{
-  const innings = match.innings;
-  for(let i=0;i<innings.length;i++){
-    const ings = innings[i];
-    
+  console.log("Process Innings.....");
+  if(match){
+    const currentMatch = match.matchId;
+    if(currentMatch){
+      console.log("----1");
+      const matchId = currentMatch.id;
+      const innings = match?.innings;
+      //console.log(innings);
+      console.log("----2");
+      if(innings){
+        console.log("----3");
+        for(let i=0;i<innings.length;i++){
+          const ings = toInningsObject(innings[i], matchId);
+          console.log("----4");
+          const existingInnings = await Innings.findOne({ where: {matchId: matchId, inningsNumber: ings.inningsNumber,},});
+
+          if(existingInnings){
+            const id = existingInnings.id;
+            console.log(`Ïnnings ${ings.inningsNumber} of match ${matchId} Found. Updating..`);
+
+            const [updated] = await Innings.update(ings, {
+              where: {id },
+            });
+            if (updated) {
+              console.log("Innings updated successfully!");
+            }else{
+              console.log("Innings update failed!");
+            }
+
+          }else{
+            console.log(`Ïnnings ${ings.inningsNumber} of match ${matchId} Not Found. Creating..`);
+
+            const ins = await Innings.create(ings);
+
+          }
+          
+        }
+      }
+
+    }
+
   }
+}
+
+const toInningsObject = (innings, matchId)=>{
+  console.log(innings);
+    return {
+      matchId: matchId,
+      inningsNumber: innings.inningsNumber,
+      runRate: innings.runRate,
+      declared: innings.declared,
+      rodl: innings.rodl,
+      battingTeamId: innings.battingTeamId,
+      bowlingTeamId: innings.bowlingTeamId,
+      blocks: innings.blocks,
+      balls: innings.balls,
+      ballsRemaining: innings.ballsRemaining,
+      scorePrediction: innings.scorePrediction,
+      runs: innings.scorecard.runs,
+      wkts: innings.scorecard.wkts,
+      ballsFaced: innings.scorecard.ballsFaced,
+      fours: innings.scorecard.fours,
+      sixes: innings.scorecard.sixes,
+      allOut: innings.scorecard.allOut,
+      fow: innings.scorecard.fow,
+      extras: innings.scorecard.extras,
+      battingStats: innings.scorecard.battingStats,
+      bowlingStats: innings.scorecard.bowlingStats,
+    };
+}
+processCurrentState = async (match) =>{
+  console.log("Process CurrentState.....");
+  if(match){
+    const currentMatch = match.matchId;
+    if(currentMatch){
+      const matchId = currentMatch.id;
+
+      console.log(matchId);
+      const currentState = match?.currentState;
+      //console.log(currentState);
+      if(currentState){
+        const existingState = await CurrentState.findByPk(matchId);
+        currentState.matchId = matchId;
+        if(existingState){
+          console.log('Match State Found. Updating...');
+
+          const [updated] = await CurrentState.update(currentState, {
+            where: { matchId },
+          });
+          if (updated) {
+            console.log("Match state updated successfully!");
+          }else{
+            console.log("Match state update failed!");
+          }
+        }else{
+          console.log('Match State Not Found. Creating...');
+          currentState.matchId = matchId;
+          const newTeam = await CurrentState.create(currentState);
+        }
+      }
+
+    }
+   
+  }
+  
+  
+  /*
   const existingVenue = await Venue.findByPk(venue.id);
   if(existingVenue){
     console.log('Venue Found');
@@ -217,4 +330,6 @@ processInnings = async (match) =>{
     console.log('Venue Not Found');
     const newVenue = Venue.create(venue);
   }
+
+  */
 }

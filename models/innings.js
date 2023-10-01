@@ -3,30 +3,32 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
 const Innings = sequelize.define('Innings', {
-  matchId: {type: DataTypes.BIGINT, allowNull: false, primaryKey: true, autoIncrement: false},
-  inningsNumber: {type: DataTypes.INT, allowNull: false, primaryKey: true},
-  inningsNumber: {type: DataTypes.STRING, allowNull: false, },
+  id: {type: DataTypes.BIGINT, allowNull: false, primaryKey: true, autoIncrement: true},
+  matchId: {type: DataTypes.BIGINT, allowNull: true},
+  inningsNumber: {type: DataTypes.INTEGER, allowNull: true},
   runRate: {type: DataTypes.FLOAT, allowNull: true,},
   declared: {type: DataTypes.BOOLEAN, allowNull: true,},
   rodl: {type: DataTypes.STRING, allowNull: true,},
   battingTeamId: {type: DataTypes.BIGINT, allowNull: true,},
   bowlingTeamId: {type: DataTypes.BIGINT, allowNull: true,},
   blocks: {type: DataTypes.INTEGER, allowNull: true,},
-  balls: {type: DataTypes.INT, allowNull: true,},
-  ballsRemaining: {type: DataTypes.INT, allowNull: true, },
-  scorePrediction: {type: DataTypes.INT, allowNull: true, },
-  runs: {type: DataTypes.INT, allowNull: true, },
-  wkts: {type: DataTypes.INT, allowNull: true, },
-  ballsFaced: {type: DataTypes.INT, allowNull: true, },
-  fours: {type: DataTypes.INT, allowNull: true, },
-  sixes: {type: DataTypes.INT, allowNull: true, },
+  balls: {type: DataTypes.INTEGER, allowNull: true,},
+  ballsRemaining: {type: DataTypes.INTEGER, allowNull: true, },
+  scorePrediction: {type: DataTypes.INTEGER, allowNull: true, },
+  runs: {type: DataTypes.INTEGER, allowNull: true, },
+  wkts: {type: DataTypes.INTEGER, allowNull: true, },
+  ballsFaced: {type: DataTypes.INTEGER, allowNull: true, },
+  fours: {type: DataTypes.INTEGER, allowNull: true, },
+  sixes: {type: DataTypes.INTEGER, allowNull: true, },
   allOut: {type: DataTypes.BOOLEAN, allowNull: true, },
-  fow: {type: DataTypes.INT, allowNull: true, },
-  extras: {type: DataTypes.INT, allowNull: true, },
+  fow: {type: DataTypes.JSON, allowNull: true, },
+  extras: {type: DataTypes.JSON, allowNull: true, },
   declared: {type: DataTypes.BOOLEAN, allowNull: true, },
+  battingStats: {type: DataTypes.JSON, allowNull: true, },
+  bowlingStats: {type: DataTypes.JSON, allowNull: true, },
 });
 
-module.exports = Series;
+module.exports = Innings;
 
 /*
 runRate: '5.30',

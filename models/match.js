@@ -18,6 +18,12 @@ const Match = sequelize.define('Match', {
   resultId: { type: DataTypes.BIGINT, allowNull: true, },
   resultStr: { type: DataTypes.STRING, allowNull: true, },
   toss: { type: DataTypes.INTEGER, allowNull: true, },
+  matchState: {type: DataTypes.STRING, allowNull: true},
+  description: {type: DataTypes.STRING, allowNull: true},
+  matchSummary: {type: DataTypes.STRING, allowNull: true},
+  inningsSummary: {type: DataTypes.STRING, allowNull: true},
+
+  matchStatus: {type: DataTypes.JSON, allowNull: true},
 });
 
 module.exports = Match;
